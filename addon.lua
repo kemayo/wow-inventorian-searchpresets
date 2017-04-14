@@ -36,10 +36,12 @@ inv.Frame.Create = function(self, ...)
 			text = text,
 			func = doSearch,
 			arg1 = search,
+			notCheckable = true,
 		}
 	end
 
 	local dropdown = CreateFrame("Frame", myname.."DropdownMenu", nil, "UIDropDownMenuTemplate")
+	local divider = {text = "---------", disabled = true}
 	local qualities = {}
 	for i = 0, #ITEM_QUALITY_COLORS - 1 do
 		qualities[i] = searchItem(ITEM_QUALITY_COLORS[i].hex .. _G['ITEM_QUALITY' .. i .. '_DESC'], 'quality:' .. _G['ITEM_QUALITY' .. i .. '_DESC']:lower())
@@ -48,28 +50,62 @@ inv.Frame.Create = function(self, ...)
 		{
 			isTitle = true,
 			text = "Search Presets",
+			notCheckable = true,
 		},
 		{
 			text = "Quality",
 			hasArrow = true,
+			notCheckable = true,
 			menuList = qualities,
 		},
 		{
 			text = "Bound",
 			hasArrow = true,
+			notCheckable = true,
 			menuList = {
+				searchItem(ITEM_SOULBOUND, ITEM_SOULBOUND),
 				searchItem(ITEM_BIND_ON_PICKUP, "bop"),
 				searchItem(ITEM_BIND_ON_EQUIP, "boe"),
 				searchItem(ITEM_BIND_TO_BNETACCOUNT, "boa"),
 				searchItem(ITEM_BIND_ON_USE, "bou"),
 			},
 		},
-		searchItem(ITEM_BIND_QUEST, "quest"),
-		searchItem(ITEM_UNIQUE, "unique"),
-		searchItem(PROFESSIONS_USED_IN_COOKING, "crafting"),
-		searchItem(ARTIFACT_POWER, "artifact power"),
-		searchItem("Champion Equipment", "champion equipment"),
-		searchItem(TOY, "toy"),
+		{
+			text = "Type",
+			hasArrow = true,
+			notCheckable = true,
+			menuList = {
+				searchItem(BAG_FILTER_EQUIPMENT, "type:" .. ARMOR:lower() .. '|' .. 'type:' .. WEAPON:lower()),
+				searchItem(ARMOR, "type:" .. ARMOR:lower()),
+				searchItem(WEAPON, "type:" .. WEAPON:lower()),
+				divider,
+				searchItem(PROFESSIONS_USED_IN_COOKING, "crafting"),
+				searchItem(ITEM_BIND_QUEST, "quest"),
+				searchItem(ITEM_UNIQUE, "unique"),
+				searchItem(TOY, "toy"),
+				divider,
+				searchItem(BAG_FILTER_CONSUMABLES, "type:consumable"),
+				searchItem(ARTIFACT_POWER, "artifact power"),
+				searchItem("Champion Equipment", "champion equipment"),
+			},
+		},
+		{
+			text = "Required level",
+			hasArrow = true,
+			notCheckable = true,
+			menuList = {
+				{
+					text = "Can use",
+					func = function(self) doSearch(self, 'reqlvl:<=' .. UnitLevel('player')) end,
+					notCheckable = true,
+				},
+				{
+					text = "Can't use",
+					func = function(self) doSearch(self, 'reqlvl:>' .. UnitLevel('player')) end,
+					notCheckable = true,
+				},
+			},
+		},
 		searchItem("In Equipment Set", "set:*"),
 	}
 	
