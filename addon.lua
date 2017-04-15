@@ -76,7 +76,7 @@ inv.Frame.Create = function(self, ...)
 			hasArrow = true,
 			notCheckable = true,
 			menuList = {
-				searchItem(BAG_FILTER_EQUIPMENT, "type:" .. ARMOR:lower() .. '|' .. 'type:' .. WEAPON:lower()),
+				searchItem(BAG_FILTER_EQUIPMENT, "type:" .. ARMOR:lower() .. '||' .. 'type:' .. WEAPON:lower()),
 				searchItem(ARMOR, "type:" .. ARMOR:lower()),
 				searchItem(WEAPON, "type:" .. WEAPON:lower()),
 				divider,
