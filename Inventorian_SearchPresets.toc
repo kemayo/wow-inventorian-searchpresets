@@ -1,6 +1,7 @@
-## Interface: 90002
+## Interface: 90005
 ## Title: Inventorian: Search Presets
 ## Author: Kemayo
+## Version: @project-version@
 ## Notes: Add search presets to Inventorian
 ## RequiredDeps: Inventorian
 ## Version: 1
