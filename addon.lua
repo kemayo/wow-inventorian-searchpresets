@@ -97,21 +97,21 @@ inv.Frame.Create = function(self, ...)
 			menuList = {
 				{
 					text = "Can use",
-					func = function(self) doSearch(self, 'reqlvl:<=' .. UnitLevel('player')) end,
+					func = function(button) doSearch(button, 'reqlvl:<=' .. UnitLevel('player')) end,
 					notCheckable = true,
 				},
 				{
 					text = "Can't use",
-					func = function(self) doSearch(self, 'reqlvl:>' .. UnitLevel('player')) end,
+					func = function(button) doSearch(button, 'reqlvl:>' .. UnitLevel('player')) end,
 					notCheckable = true,
 				},
 			},
 		},
 		searchItem("In Equipment Set", "set:*"),
 	}
-	
-	presets:SetScript("OnClick", function(self, button)
-		if button ~= "LeftButton" then
+
+	presets:SetScript("OnClick", function(button, mouseButton)
+		if mouseButton ~= "LeftButton" then
 			return
 		end
 		EasyMenu(menu, dropdown, presets, 0, 0, "MENU")

@@ -4,6 +4,6 @@
 ## Version: @project-version@
 ## Notes: Add search presets to Inventorian
 ## RequiredDeps: Inventorian
-## Version: 1
+## X-Curse-Project-ID: 265183
 
 addon.lua
