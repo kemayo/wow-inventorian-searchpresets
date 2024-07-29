@@ -97,17 +97,14 @@ read_globals = {
     "NumberFontNormal",
 
     -- FrameXML API
-    "EasyMenu",
     "Enum",
-    "CloseDropDownMenus",
     "CreateFrame",
-    "InterfaceOptionsFrame_OpenToCategory",
-    "ToggleDropDownMenu",
     "UIDropDownMenu_AddButton",
     "UISpecialFrames",
     "ScrollingEdit_OnCursorChanged",
     "ScrollingEdit_OnUpdate",
     "InspectPaperDollFrame_OnShow",
+    "MenuResponse",
 
     -- FrameXML Constants
     "ACHIEVEMENTS",

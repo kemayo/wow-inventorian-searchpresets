@@ -6,10 +6,10 @@ local original_FrameCreate = inv.Frame.Create
 inv.Frame.Create = function(self, ...)
 	local frame = original_FrameCreate(self, ...)
 
-	local presets = CreateFrame("Button", nil, frame) --, "UIPanelButtonTemplate")
+	local presets = CreateFrame("DropdownButton", nil, frame) --, "WowStyle1DropdownTemplate")
 	presets:SetSize(32, 32)
 	presets:SetPoint("TOPLEFT", 64, -27)
-	presets:RegisterForClicks("anyUp")
+	-- presets:RegisterForClicks("anyUp")
 
 	presets.Icon = presets:CreateTexture(nil, "BACKGROUND")
 	presets.Icon:SetAtlas('bags-icon-tradegoods')
@@ -26,95 +26,49 @@ inv.Frame.Create = function(self, ...)
 	-- Base inventorian is: 75, -32
 	frame.SearchBox:SetPoint("TOPLEFT", 75 + (32 + 2), -32)
 
-	local doSearch = function(_, search)
-		CloseDropDownMenus(1)
-		frame.SearchBox:SetText(search)
+	local doSearch = function(data, event)
+		frame.SearchBox:SetText(data)
+		return MenuResponse.CloseAll
 	end
 
-	local searchItem = function(text, search)
-		return {
-			text = text,
-			func = doSearch,
-			arg1 = search,
-			notCheckable = true,
-		}
-	end
-
-	local dropdown = CreateFrame("Frame", myname.."DropdownMenu", nil, "UIDropDownMenuTemplate")
-	local divider = {text = "---------", disabled = true}
-	local qualities = {}
-	for i = 0, #ITEM_QUALITY_COLORS - 1 do
-		qualities[i] = searchItem(ITEM_QUALITY_COLORS[i].hex .. _G['ITEM_QUALITY' .. i .. '_DESC'], 'quality:' .. _G['ITEM_QUALITY' .. i .. '_DESC']:lower())
-	end
-	local menu = {
-		{
-			isTitle = true,
-			text = "Search Presets",
-			notCheckable = true,
-		},
-		{
-			text = "Quality",
-			hasArrow = true,
-			notCheckable = true,
-			menuList = qualities,
-		},
-		{
-			text = "Bound",
-			hasArrow = true,
-			notCheckable = true,
-			menuList = {
-				-- Can't search for "is currently soulbound", because it's scanning itemlinks, not the actual container-items
-				-- searchItem(ITEM_SOULBOUND, ITEM_SOULBOUND),
-				searchItem(ITEM_BIND_ON_PICKUP, "bind:bop"),
-				searchItem(ITEM_BIND_ON_EQUIP, "bind:boe"),
-				searchItem(ITEM_BIND_TO_BNETACCOUNT, "bind:boa"),
-				searchItem(ITEM_BIND_ON_USE, "bind:bou"),
-			},
-		},
-		{
-			text = "Type",
-			hasArrow = true,
-			notCheckable = true,
-			menuList = {
-				searchItem(BAG_FILTER_EQUIPMENT, "type:" ..  GetItemClassInfo(Enum.ItemClass.Armor):lower() .. '||' .. 'type:' .. GetItemClassInfo(Enum.ItemClass.Weapon):lower()),
-				searchItem(GetItemClassInfo(Enum.ItemClass.Armor), "type:" .. GetItemClassInfo(Enum.ItemClass.Armor):lower()),
-				searchItem(GetItemClassInfo(Enum.ItemClass.Weapon), "type:" .. GetItemClassInfo(Enum.ItemClass.Weapon):lower()),
-				searchItem(GetItemClassInfo(Enum.ItemClass.Consumable), "type:" .. GetItemClassInfo(Enum.ItemClass.Consumable):lower()),
-				divider,
-				searchItem(PROFESSIONS_USED_IN_COOKING, PROFESSIONS_USED_IN_COOKING:lower()),
-				searchItem(ITEM_BIND_QUEST, "bind:quest"),
-				searchItem(ITEM_UNIQUE, "bind:unique"),
-				searchItem(TOY, "desc:toy"),
-				divider,
-				searchItem(ARTIFACT_POWER, "desc:artifact power"),
-				searchItem("Champion Equipment", "desc:champion equipment"),
-			},
-		},
-		{
-			text = "Required level",
-			hasArrow = true,
-			notCheckable = true,
-			menuList = {
-				{
-					text = "Can use",
-					func = function(button) doSearch(button, 'reqlvl:<=' .. UnitLevel('player')) end,
-					notCheckable = true,
-				},
-				{
-					text = "Can't use",
-					func = function(button) doSearch(button, 'reqlvl:>' .. UnitLevel('player')) end,
-					notCheckable = true,
-				},
-			},
-		},
-		searchItem("In Equipment Set", "set:*"),
-	}
-
-	presets:SetScript("OnClick", function(button, mouseButton)
-		if mouseButton ~= "LeftButton" then
-			return
+	presets:SetupMenu(function(owner, rootDescription)
+		rootDescription:CreateTitle("Search Presets")
+		local quality = rootDescription:CreateButton("Quality")
+		for i = 0, #ITEM_QUALITY_COLORS - 1 do
+			quality:CreateButton(
+				ITEM_QUALITY_COLORS[i].hex .. _G['ITEM_QUALITY' .. i .. '_DESC'],
+				doSearch,
+				'quality:' .. _G['ITEM_QUALITY' .. i .. '_DESC']:lower()
+			)
 		end
-		EasyMenu(menu, dropdown, presets, 0, 0, "MENU")
+
+		local bound = rootDescription:CreateButton("Bound")
+		-- Can't search for "is currently soulbound", because it's scanning itemlinks, not the actual container-items
+		-- bound:CreateButton(ITEM_SOULBOUND, doSearch, ITEM_SOULBOUND)
+		bound:CreateButton(ITEM_BIND_ON_PICKUP, doSearch, "bind:bop")
+		bound:CreateButton(ITEM_BIND_ON_EQUIP, doSearch, "bind:boe")
+		bound:CreateButton(ITEM_BIND_TO_BNETACCOUNT, doSearch, "bind:boa")
+		bound:CreateButton(ITEM_BIND_ON_USE, doSearch, "bind:bou")
+
+		local types = rootDescription:CreateButton("Type")
+		types:CreateButton(BAG_FILTER_EQUIPMENT, doSearch, "type:" ..  GetItemClassInfo(Enum.ItemClass.Armor):lower() .. '||' .. 'type:' .. GetItemClassInfo(Enum.ItemClass.Weapon):lower())
+		types:CreateButton(GetItemClassInfo(Enum.ItemClass.Armor), doSearch, "type:" .. GetItemClassInfo(Enum.ItemClass.Armor):lower())
+		types:CreateButton(GetItemClassInfo(Enum.ItemClass.Weapon), doSearch, "type:" .. GetItemClassInfo(Enum.ItemClass.Weapon):lower())
+		types:CreateButton(GetItemClassInfo(Enum.ItemClass.Consumable), doSearch, "type:" .. GetItemClassInfo(Enum.ItemClass.Consumable):lower())
+		types:CreateDivider()
+		types:CreateButton(PROFESSIONS_USED_IN_COOKING, doSearch, PROFESSIONS_USED_IN_COOKING:lower())
+		types:CreateButton(ITEM_BIND_QUEST, doSearch, "bind:quest")
+		types:CreateButton(ITEM_UNIQUE, doSearch, "bind:unique")
+		types:CreateButton(TOY, doSearch, "desc:toy")
+		types:CreateDivider()
+		types:CreateButton(ARTIFACT_POWER, doSearch, "desc:artifact power")
+		types:CreateButton("Champion Equipment", doSearch, "desc:champion equipment")
+
+		local level = rootDescription:CreateButton("Required level")
+		level:CreateButton("Can use", doSearch, 'reqlvl:<=' .. UnitLevel('player'))
+		level:CreateButton("Can't use", doSearch, 'reqlvl:>' .. UnitLevel('player'))
+
+		rootDescription:CreateButton("In Equipment Set", doSearch, "set:*")
 	end)
 
 	return frame
