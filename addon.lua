@@ -63,6 +63,7 @@ inv.Frame.Create = function(self, ...)
 		types:CreateDivider()
 		types:CreateButton(ARTIFACT_POWER, doSearch, "desc:artifact power")
 		types:CreateButton("Champion Equipment", doSearch, "desc:champion equipment")
+		types:CreateButton(ANIMA, doSearch, "desc:" .. ANIMA)
 
 		local level = rootDescription:CreateButton("Required level")
 		level:CreateButton("Can use", doSearch, 'reqlvl:<=' .. UnitLevel('player'))

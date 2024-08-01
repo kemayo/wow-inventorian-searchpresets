@@ -112,6 +112,7 @@ read_globals = {
     "ADD",
     "ALL",
     "ALT_KEY_TEXT",
+    "ANIMA",
     "ARTIFACT_POWER",
     "BACKPACK_CONTAINER",
     "BACKPACK_TOOLTIP",
