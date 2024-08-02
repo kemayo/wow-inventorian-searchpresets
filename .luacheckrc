@@ -225,6 +225,7 @@ read_globals = {
     "UNKNOWN",
     "UNKNOWNOBJECT",
     "USED",
+    "WORLD_QUEST_REWARD_FILTERS_ANIMA",
     "YES",
     "ZONE",
 }
