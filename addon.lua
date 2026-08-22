@@ -60,10 +60,15 @@ inv.Frame.Create = function(self, ...)
 		types:CreateButton(ITEM_BIND_QUEST, doSearch, "bind:quest")
 		types:CreateButton(ITEM_UNIQUE, doSearch, "bind:unique")
 		types:CreateButton(TOY, doSearch, "desc:toy")
-		types:CreateDivider()
-		types:CreateButton(ARTIFACT_POWER, doSearch, "desc:artifact power")
-		types:CreateButton("Champion Equipment", doSearch, "desc:champion equipment")
-		types:CreateButton(ANIMA or WORLD_QUEST_REWARD_FILTERS_ANIMA, doSearch, "desc:" .. (ANIMA or WORLD_QUEST_REWARD_FILTERS_ANIMA))
+		types:QueueDivider()
+		if LE_EXPANSION_LEVEL_CURRENT >= LE_EXPANSION_LEGION then
+			types:CreateButton(ARTIFACT_POWER, doSearch, "desc:artifact power")
+			types:CreateButton("Champion Equipment", doSearch, "desc:champion equipment")
+		end
+		if LE_EXPANSION_LEVEL_CURRENT >= LE_EXPANSION_SHADOWLANDS then
+			local ANIMA = ANIMA or WORLD_QUEST_REWARD_FILTERS_ANIMA
+			types:CreateButton(ANIMA, doSearch, "desc:" .. ANIMA)
+		end
 
 		local level = rootDescription:CreateButton("Required level")
 		level:CreateButton("Can use", doSearch, 'reqlvl:<=' .. UnitLevel('player'))

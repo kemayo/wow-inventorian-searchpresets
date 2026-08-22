@@ -1,4 +1,4 @@
-## Interface: 120007
+## Interface: 120100, 50504, 30405, 20506, 11509
 ## Title: Inventorian: Search Presets
 ## Author: Kemayo
 ## Version: @project-version@
